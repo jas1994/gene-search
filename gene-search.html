@@ -1,0 +1,131 @@
+<html>
+<script type="text/javascript">
+//return an array of objects according to key, value, or key and value matching
+function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));    
+        } else 
+        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
+        if (i == key && obj[i] == val || i == key && val == '') { //
+            objects.push(obj);
+        } else if (obj[i] == val && key == ''){
+            //only add if the object is not already in the array
+            if (objects.lastIndexOf(obj) == -1){
+                objects.push(obj);
+            }
+        }
+    }
+    return objects;
+}
+
+//return an array of values that match on a certain key
+function getValues(obj, key) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getValues(obj[i], key));
+        } else if (i == key) {
+            objects.push(obj[i]);
+        }
+    }
+    return objects;
+}
+
+//return an array of keys that match on a certain value
+function getKeys(obj, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getKeys(obj[i], val));
+        } else if (obj[i] == val) {
+            objects.push(i);
+        }
+    }
+    return objects;
+}
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
+}
+var xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://civic.genome.wustl.edu/api/genes?count=6000", false);
+    xhr.send();
+    var js=JSON.parse(xhr.responseText);
+
+
+
+//var js = JSON.parse(json);
+
+var res=getObjects(js,'name',getURLParameter('gene').toUpperCase());
+console.log(res);
+res.forEach(function(data){
+document.write("<b>About</b><br>")
+document.write("Entrez Id: " + data.entrez_id);
+document.write("<br>")
+document.write("Name: "+data.name +"<br>");
+document.write("Description: " +data.description+"<br>");
+document.write("<b>Aliases</b><br>");
+var aliases=data.aliases.length;
+for(i=0;i<aliases;i++){
+    document.write(data.aliases[i]+"<br>")
+}
+
+document.write("<b>Variant Groups</b><br>");
+var var_groups=data.variant_groups.length;
+var var_numbers=[];
+for(i=0;i<var_groups;i++){
+    var_numbers[i]=data.variant_groups[i].variants.length;
+}
+//document.write(var_groups);
+//document.write(var_numbers);
+
+for(i=0;i<var_groups;i++){
+        document.write("Description "+data.variant_groups[i].description+"<br>");
+        document.write("<b>Variant Group number "+(i+1)+"<br></b>");
+
+    for(j=0;j<var_numbers[i];j++){
+        document.write("Variant number "+(j+1)+"<br>")
+        document.write("Enterez Id: "+data.variant_groups[i].variants[j].entrez_id+"<br>");
+        document.write("Name: "+data.variant_groups[i].variants[j].name+"<br>");
+        document.write("Type: "+data.variant_groups[i].variants[j].type+"<br>");
+        document.write("Description: "+data.variant_groups[i].variants[j].description+"<br>");
+        document.write("Coordinates<br>")
+        document.write("&nbsp &nbsp &nbsp &nbsp Chromosome: "+data.variant_groups[i].variants[j].coordinates.chromosome+"<br>");
+                document.write("&nbsp &nbsp &nbsp &nbsp Chromosome2: "+data.variant_groups[i].variants[j].coordinates.chromosome2+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Ensemble Version: "+data.variant_groups[i].variants[j].coordinates.ensembl_version+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Reference bases: "+data.variant_groups[i].variants[j].coordinates.reference_bases+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Reference build: "+data.variant_groups[i].variants[j].coordinates.reference_build+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Representative transcript: "+data.variant_groups[i].variants[j].coordinates.representative_transcript+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Representative transcript2: "+data.variant_groups[i].variants[j].coordinates.representative_transcript2+"<br>");
+                document.write("&nbsp &nbsp &nbsp &nbsp Start: "+data.variant_groups[i].variants[j].coordinates.start+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Start2: "+data.variant_groups[i].variants[j].coordinates.start2+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Stop: "+data.variant_groups[i].variants[j].coordinates.stop+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Stop2: "+data.variant_groups[i].variants[j].coordinates.stop2+"<br>");
+        document.write("&nbsp &nbsp &nbsp &nbsp Variant bases: "+data.variant_groups[i].variants[j].coordinates.variant_bases+"<br>");
+
+
+
+
+    }
+
+
+
+}
+var variants_num=data.variants.length;
+document.write("<b>Variants</b><br>");
+for(i=0;i<variants_num;i++){
+    document.write(data.variants[i].name+"<br>");
+}
+
+
+
+});
+
+
+
+</script>
+</html>
