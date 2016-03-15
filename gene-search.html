@@ -48,7 +48,7 @@ function getKeys(obj, val) {
     }
     return objects;
 }
-function getURLParameter(name) {
+function getURLParameter(name) {//to get "get" variable from uri
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null;
 }
 var xhr = new XMLHttpRequest();
@@ -62,7 +62,8 @@ var xhr = new XMLHttpRequest();
 
 var res=getObjects(js,'name',getURLParameter('gene').toUpperCase());
 console.log(res);
-res.forEach(function(data){
+res.forEach(function(data)
+{
 document.write("<b>About</b><br>")
 document.write("Entrez Id: " + data.entrez_id);
 document.write("<br>")
@@ -70,24 +71,28 @@ document.write("Name: "+data.name +"<br>");
 document.write("Description: " +data.description+"<br>");
 document.write("<b>Aliases</b><br>");
 var aliases=data.aliases.length;
-for(i=0;i<aliases;i++){
+for(i=0;i<aliases;i++)
+    {
     document.write(data.aliases[i]+"<br>")
-}
+    }
 
 document.write("<b>Variant Groups</b><br>");
 var var_groups=data.variant_groups.length;
 var var_numbers=[];
-for(i=0;i<var_groups;i++){
+for(i=0;i<var_groups;i++)
+        {
     var_numbers[i]=data.variant_groups[i].variants.length;
-}
+        }
 //document.write(var_groups);
 //document.write(var_numbers);
 
-for(i=0;i<var_groups;i++){
+for(i=0;i<var_groups;i++)
+                {
         document.write("Description "+data.variant_groups[i].description+"<br>");
         document.write("<b>Variant Group number "+(i+1)+"<br></b>");
 
-    for(j=0;j<var_numbers[i];j++){
+    for(j=0;j<var_numbers[i];j++)
+                        {
         document.write("Variant number "+(j+1)+"<br>")
         document.write("Enterez Id: "+data.variant_groups[i].variants[j].entrez_id+"<br>");
         document.write("Name: "+data.variant_groups[i].variants[j].name+"<br>");
@@ -110,16 +115,17 @@ for(i=0;i<var_groups;i++){
 
 
 
-    }
+                        }
 
 
 
-}
+                }
 var variants_num=data.variants.length;
 document.write("<b>Variants</b><br>");
-for(i=0;i<variants_num;i++){
+for(i=0;i<variants_num;i++)
+                            {
     document.write(data.variants[i].name+"<br>");
-}
+                            }
 
 
 
